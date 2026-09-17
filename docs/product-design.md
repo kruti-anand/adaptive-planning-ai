@@ -1,8 +1,10 @@
-# AI Adaptive Planning — Product Design
+# AI Travel Plan Assistant — Product Design
 
 ## 1. Product Goal
 
-AI Adaptive Planning transforms a rough or incomplete request into a clear, personalized, actionable plan through adaptive conversational discovery.
+The AI Travel Plan Assistant transforms a rough or incomplete travel request
+into a clear, personalized, actionable travel plan through conversational
+discovery.
 
 The system should behave less like a form and more like an intelligent planning partner.
 
@@ -13,6 +15,24 @@ The system determines what it needs to understand next.
 The user answers.
 
 The system continuously updates its understanding until additional questions are unlikely to materially change the plan.
+
+## 1.1 MVP Scope
+
+The initial portfolio implementation focuses on travel planning as a concrete
+domain example.
+
+The MVP uses a lightweight, deterministic planning workflow to demonstrate the
+core user experience without requiring paid AI APIs or external services.
+
+The current implementation intentionally does not claim to fully implement
+the domain-neutral adaptive reasoning described in this document.
+
+The broader adaptive planning architecture represents the target product
+direction for future AI integration.
+
+This separation allows the project to demonstrate product thinking and
+incremental delivery while keeping the initial implementation simple,
+testable, and zero-cost.
 
 ---
 
