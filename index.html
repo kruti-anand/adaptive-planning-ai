@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Adaptive Planning</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <main class="app">
+    <header class="app-header">
+      <h1>AI Adaptive Planning</h1>
+      <p>Turn a rough idea into a clear, personalized, actionable plan.</p>
+    </header>
+
+```
+<section id="planning-container" class="planning-container">
+
+  <div id="start-view" class="view">
+    <label for="request-input">What would you like to plan?</label>
+
+    <textarea
+      id="request-input"
+      rows="8"
+      placeholder="Describe what you want to accomplish. Include anything you already know or have decided."
+    ></textarea>
+
+    <button id="start-planning" type="button">
+      Start Planning
+    </button>
+  </div>
+
+  <div id="conversation-view" class="view hidden">
+    <div id="conversation" class="conversation"></div>
+
+    <div id="response-area" class="response-area">
+      <textarea
+        id="response-input"
+        rows="5"
+        placeholder="Enter your response..."
+      ></textarea>
+
+      <button id="submit-response" type="button">
+        Continue
+      </button>
+    </div>
+  </div>
+
+  <div id="completion-view" class="view hidden">
+    <div class="completion-message">
+      <h2>Planning discovery is complete</h2>
+
+      <p>
+        No further questions have been identified that would materially
+        change the plan.
+      </p>
+
+      <p>
+        Would you like to proceed with the final plan, or would you like
+        to add any additional details first?
+      </p>
+    </div>
+
+    <div class="completion-actions">
+      <button id="add-details" type="button">
+        Add Details
+      </button>
+
+      <button id="generate-plan" type="button">
+        Create Final Plan
+      </button>
+    </div>
+  </div>
+
+  <div id="plan-view" class="view hidden">
+    <div id="final-plan"></div>
+  </div>
+
+</section>
+```
+
+  </main>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
