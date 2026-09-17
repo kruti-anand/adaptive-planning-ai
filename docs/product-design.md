@@ -267,9 +267,9 @@ rather than autonomous decision-making.
 
 ## 13. Extensibility
 
-The same adaptive planning engine should eventually support multiple planning scenarios.
+The adaptive planning engine should be designed to support a broad range of planning scenarios without requiring the core reasoning engine to know every possible domain in advance.
 
-Potential extensions include:
+Potential extensions may include:
 
 * Travel
 * Software requirements
@@ -282,7 +282,26 @@ Potential extensions include:
 * Purchasing decisions
 * Personal planning
 
-These are extensions of the same underlying planning mechanism rather than separate applications.
+These are examples, not a predefined list of supported domains.
+
+### Requests Outside Known Domains
+
+If a request does not correspond to an existing domain extension, the core engine should still attempt to understand the request and conduct adaptive discovery using the information available in the conversation.
+
+The system should:
+
+1. Identify the user's intended outcome.
+2. Understand the nature and context of the request.
+3. Determine what information is relevant to achieving that outcome.
+4. Identify meaningful uncertainty.
+5. Ask questions that would materially improve the resulting plan.
+6. Generate a plan using the validated information.
+
+The absence of a predefined domain extension should **not** cause the system to fall back to a fixed questionnaire or refuse to plan.
+
+Domain-specific extensions should enhance the system when specialized knowledge is useful, but they should not define the boundaries of what the core planning engine can handle.
+
+**The planning engine should be capable of adapting to a request it has never encountered before.**
 
 ---
 
