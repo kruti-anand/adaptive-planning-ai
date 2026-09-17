@@ -61,7 +61,48 @@ conversation.appendChild(messageElement);
 });
 }
 
-function startPlanning() {
+async function callPlanningEngine() {
+try {
+setLoading(true);
+
+```
+const response = await fetch("/api/plan", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    messages: state.messages
+  })
+});
+
+const data = await response.json();
+
+if (!response.ok) {
+  throw new Error(data.error || "The planning engine could not process the request.");
+}
+
+return data.response;
+```
+
+} catch (error) {
+console.error(error);
+
+```
+addMessage(
+  "ai",
+  "I’m unable to connect to the planning engine right now. Please check the application configuration and try again."
+);
+
+return null;
+```
+
+} finally {
+setLoading(false);
+}
+}
+
+async function startPlanning() {
 const request = requestInput.value.trim();
 
 if (!request) {
@@ -77,24 +118,14 @@ showView(conversationView);
 
 addMessage("user", request);
 
-/*
-AI integration will determine the first question.
+const aiResponse = await callPlanningEngine();
 
-```
-This application must not contain a hardcoded question sequence.
-The planning engine will eventually receive the current request
-and conversation state and return the next best question.
-```
-
-*/
-
-addMessage(
-"ai",
-"Your request has been received. The adaptive planning engine will determine what information is most useful to clarify next."
-);
+if (aiResponse) {
+addMessage("ai", aiResponse);
+}
 }
 
-function submitResponse() {
+async function submitResponse() {
 const response = responseInput.value.trim();
 
 if (!response) {
@@ -106,15 +137,11 @@ addMessage("user", response);
 
 responseInput.value = "";
 
-/*
-AI integration will evaluate the updated planning state and determine
-whether another question is needed or whether discovery is complete.
+const aiResponse = await callPlanningEngine();
 
-```
-No domain-specific question logic belongs here.
-```
-
-*/
+if (aiResponse) {
+addMessage("ai", aiResponse);
+}
 }
 
 function showCompletion() {
@@ -128,18 +155,50 @@ showView(conversationView);
 responseInput.focus();
 }
 
-function generatePlan() {
+async function generatePlan() {
+addMessage(
+"user",
+"The user has chosen to proceed with the final plan."
+);
+
+const aiResponse = await callPlanningEngine();
+
+if (!aiResponse) {
+return;
+}
+
 state.status = "plan";
 showView(planView);
 
-finalPlan.innerHTML = `     <h2>Final Plan</h2>     <p>
-      The AI planning engine will generate the validated plan here.     </p>
-  `;
+finalPlan.innerHTML = "";
+
+const heading = document.createElement("h2");
+heading.textContent = "Final Plan";
+
+const content = document.createElement("div");
+content.textContent = aiResponse;
+
+finalPlan.appendChild(heading);
+finalPlan.appendChild(content);
+}
+
+function setLoading(isLoading) {
+startPlanningButton.disabled = isLoading;
+submitResponseButton.disabled = isLoading;
+addDetailsButton.disabled = isLoading;
+generatePlanButton.disabled = isLoading;
+
+responseInput.disabled = isLoading;
+requestInput.disabled = isLoading;
 }
 
 startPlanningButton.addEventListener("click", startPlanning);
 submitResponseButton.addEventListener("click", submitResponse);
-addDetailsButton.addEventListener("click", addDetails);
+addDetailsButton.addEventListener("click", () => {
+state.status = "conversation";
+showView(conversationView);
+responseInput.focus();
+});
 generatePlanButton.addEventListener("click", generatePlan);
 
 requestInput.addEventListener("keydown", (event) => {
