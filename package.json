@@ -1,14 +1,13 @@
 {
-"name": "ai-adaptive-planning",
-"version": "1.0.0",
-"description": "An AI-powered adaptive planning engine that turns ambiguous requests into clear, personalized, actionable plans.",
-"private": true,
-"type": "module",
-"scripts": {
-"start": "node --env-file=.env server.js"
-},
-"dependencies": {
-"express": "^5.1.0",
-"openai": "^5.12.0"
-}
+  "name": "ai-travel-plan-assistant",
+  "version": "1.0.0",
+  "description": "A travel planning assistant that turns a travel idea and personal preferences into a structured trip plan.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
 }
