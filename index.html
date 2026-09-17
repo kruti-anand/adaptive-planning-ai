@@ -7,7 +7,6 @@
   <title>AI Adaptive Planning</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
   <main class="app">
     <header class="app-header">
@@ -15,70 +14,63 @@
       <p>Turn a rough idea into a clear, personalized, actionable plan.</p>
     </header>
 
-<section id="planning-container" class="planning-container">
 
-  <div id="start-view" class="view">
-    <label for="request-input">What would you like to plan?</label>
+<section id="start-view" class="view">
+  <label for="request-input">What would you like to plan?</label>
 
-    <textarea
-      id="request-input"
-      rows="8"
-      placeholder="Describe what you want to accomplish. Include anything you already know or have decided."
-    ></textarea>
+  <textarea
+    id="request-input"
+    rows="6"
+    placeholder="Describe what you want to accomplish..."
+  ></textarea>
 
-    <button id="start-planning" type="button">
-      Start Planning
-    </button>
-  </div>
+  <button id="start-planning">Start Planning</button>
 
-  <div id="conversation-view" class="view hidden">
-    <div id="conversation" class="conversation"></div>
-
-    <div id="response-area" class="response-area">
-      <textarea
-        id="response-input"
-        rows="5"
-        placeholder="Enter your response..."
-      ></textarea>
-
-      <button id="submit-response" type="button">
-        Continue
-      </button>
-    </div>
-  </div>
-
-  <div id="completion-view" class="view hidden">
-    <div class="completion-message">
-      <h2>Planning discovery is complete</h2>
-
-      <p>
-        No further questions have been identified that would materially
-        change the plan.
-      </p>
-
-      <p>
-        Would you like to proceed with the final plan, or would you like
-        to add any additional details first?
-      </p>
-    </div>
-
-    <div class="completion-actions">
-      <button id="add-details" type="button">
-        Add Details
-      </button>
-
-      <button id="generate-plan" type="button">
-        Create Final Plan
-      </button>
-    </div>
-  </div>
-
-  <div id="plan-view" class="view hidden">
-    <div id="final-plan"></div>
-  </div>
-
+  <p class="hint">Press Ctrl + Enter to start.</p>
 </section>
 
+<section id="conversation-view" class="view hidden">
+  <div id="conversation" class="conversation"></div>
+
+  <div class="response-area">
+    <label for="response-input">Your response</label>
+
+    <textarea
+      id="response-input"
+      rows="4"
+      placeholder="Add your response..."
+    ></textarea>
+
+    <button id="submit-response">Continue</button>
+
+    <p class="hint">Press Ctrl + Enter to continue.</p>
+  </div>
+</section>
+
+<section id="completion-view" class="view hidden">
+  <div class="completion-card">
+    <h2>Discovery Complete</h2>
+
+    <p>
+      No further questions have been identified that would materially
+      change the plan.
+    </p>
+
+    <p>
+      Would you like to proceed with the final plan, or would you like
+      to add any additional details first?
+    </p>
+
+    <div class="completion-actions">
+      <button id="add-details">Add Details</button>
+      <button id="generate-plan">Proceed to Final Plan</button>
+    </div>
+  </div>
+</section>
+
+<section id="plan-view" class="view hidden">
+  <div id="final-plan" class="plan-card"></div>
+</section>
 
   </main>
 
