@@ -44,7 +44,6 @@ state.messages.forEach((message) => {
 const messageElement = document.createElement("div");
 messageElement.className = `message ${message.role}`;
 
-```
 const label = document.createElement("span");
 label.className = "message-label";
 label.textContent = message.role === "user" ? "You" : "AI";
@@ -56,7 +55,6 @@ messageElement.appendChild(label);
 messageElement.appendChild(content);
 
 conversation.appendChild(messageElement);
-```
 
 });
 
@@ -67,7 +65,6 @@ async function callPlanningEngine() {
 try {
 setLoading(true);
 
-```
 const response = await fetch("/api/plan", {
   method: "POST",
   headers: {
@@ -91,19 +88,18 @@ if (!data.response || !data.response.type) {
 }
 
 return data.response;
-```
+
 
 } catch (error) {
 console.error(error);
 
-```
 addMessage(
   "ai",
   "I’m unable to connect to the planning engine right now. Please check the application configuration and try again."
 );
 
 return null;
-```
+
 
 } finally {
 setLoading(false);
@@ -118,7 +114,6 @@ return;
 if (result.type === "question") {
 state.status = "conversation";
 
-```
 let message = result.message;
 
 if (result.why_it_matters) {
@@ -128,28 +123,27 @@ if (result.why_it_matters) {
 addMessage("ai", message);
 responseInput.focus();
 return;
-```
+
 
 }
 
 if (result.type === "complete") {
 state.status = "complete";
 
-```
+
 if (result.message) {
   addMessage("ai", result.message);
 }
 
 showView(completionView);
 return;
-```
+
 
 }
 
 if (result.type === "plan") {
 state.status = "plan";
 
-```
 showView(planView);
 
 finalPlan.innerHTML = "";
@@ -162,7 +156,7 @@ content.textContent = result.message;
 
 finalPlan.appendChild(heading);
 finalPlan.appendChild(content);
-```
+
 
 }
 }
