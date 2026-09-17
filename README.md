@@ -1,118 +1,96 @@
-# AI Adaptive Planning
+# AI Travel Plan Assistant
 
-**Turn a rough idea into a clear, personalized, actionable plan.**
+An AI-assisted travel planning application that turns a rough travel idea into a structured, personalized trip plan through a guided conversation.
 
-## Overview
+## Problem
 
-AI Adaptive Planning is an AI-powered planning engine designed to turn incomplete, ambiguous, or loosely defined requests into structured, actionable plans through dynamic conversational discovery.
+Travel planning often starts with an incomplete request such as:
 
-Instead of following a predefined questionnaire, the system evaluates the user's request, understands the intended outcome, and determines what information is most important to clarify next.
+> "I want to take my family to Iceland."
 
-The goal is:
+A useful itinerary depends on understanding goals, dates, travelers, budget, preferences, constraints, and priorities. The challenge is turning an ambiguous request into a practical plan without overwhelming the user with a long questionnaire.
 
-**Understand → Determine → Ask → Refine → Validate → Plan**
+## MVP Scope
 
-## How It Works
+The MVP focuses on:
 
-1. **Understand the request**
-   Analyze the complete request to identify the user's intent, desired outcome, information already provided, decisions already made, constraints, preferences, and unresolved areas.
+* Capturing an initial travel request
+* Asking targeted follow-up questions
+* Building context from the user's responses
+* Identifying key travel requirements and constraints
+* Generating a personalized trip plan
+* Keeping the user in the loop to review and refine the plan
 
-2. **Determine what matters**
-   Consider the nature of the request and identify the information that could materially affect the eventual plan.
+The MVP intentionally does **not** include flight booking, hotel reservations, payments, or other transactional capabilities.
 
-3. **Ask the next best question**
-   Select the single most useful question to reduce meaningful uncertainty and improve the resulting plan.
+## User Flow
 
-4. **Update the understanding**
-   Incorporate the user's answer into the current understanding of the request.
+```text
+Travel Idea
+     ↓
+Clarifying Conversation
+     ↓
+Travel Preferences & Constraints
+     ↓
+Personalized Itinerary
+     ↓
+User Review & Refinement
+```
 
-5. **Reassess dynamically**
-   After every answer, reconsider what is now known, what remains unresolved, and whether another question would materially improve the plan.
+### Example
 
-6. **Validate before planning**
-   Once the request is sufficiently understood, present the interpreted requirements for the user to review, correct, or refine.
+**User:**
+"I want to take my family to Iceland."
 
-7. **Generate the plan**
-   Create the final plan from the validated understanding rather than from assumptions.
+**Assistant:**
+Asks relevant questions about timing, travelers, interests, budget, transportation, and other planning considerations.
 
-## Core Design Principle
+**Output:**
+A structured itinerary with recommended activities, sequencing, transportation considerations, estimated planning considerations, and next steps.
 
-> **The AI does not ask a question because a category is missing. It asks because the answer would materially improve the plan.**
+## TPM Skills Demonstrated
 
-There is no fixed question order, predefined questionnaire, or hardcoded sequence of discovery questions.
+This project demonstrates how I approach **AI-enabled technology delivery and product execution**, including:
 
-The next question is determined from the current context and the potential impact of unresolved information.
+* Translating ambiguous requirements into actionable outcomes
+* Designing a structured discovery and clarification process
+* Identifying constraints, dependencies, assumptions, and risks
+* Applying AI to improve an existing planning workflow
+* Designing human-in-the-loop validation
+* Defining an MVP and managing scope
+* Translating user needs into a practical product experience
+* Iterative delivery and continuous refinement
 
-## Context-Aware Reasoning
+## Technology
 
-The planning engine should recognize the nature of the request and reason about the considerations relevant to that context without relying on a rigid checklist.
+* HTML / CSS / JavaScript
+* Node.js
+* Express
+* AI-assisted planning workflow
+* GitHub for source control and portfolio documentation
 
-For example:
+## How to Run
 
-* A travel-related request may require reasoning about destinations, timing, transportation, activities, logistics, preferences, and constraints.
-* A software-related request may require reasoning about users, capabilities, requirements, dependencies, technical constraints, and delivery considerations.
-* An event-related request may require reasoning about participants, timing, location, scope, logistics, and priorities.
-* A personal project may require reasoning about objectives, resources, sequencing, dependencies, and constraints.
+### Prerequisites
 
-These are **examples of reasoning areas, not predefined questions or required categories**.
+* Node.js installed
+* Git installed (optional if downloading the repository)
 
-The AI should determine which considerations are relevant based on the actual request.
+### Start the application
 
-## Domain-Neutral by Design
+```bash
+npm install
+npm start
+```
 
-The core adaptive discovery engine is intentionally independent of any single domain.
+Then open:
 
-The same reasoning approach can support:
+```text
+http://localhost:3000
+```
 
-* Travel planning
-* Event planning
-* Personal projects
-* Career planning
-* Home projects
-* Education planning
-* Business activities
-* Purchasing decisions
-* Process planning
-* Software projects and requirements
+## Portfolio Context
 
-Domain-specific capabilities can be added as extensions while keeping the underlying adaptive planning mechanism reusable.
+This project is part of my exploration of **AI-enabled delivery and practical AI applications for technology program management**.
 
-## Planned Architecture
-
-The project will evolve around several core capabilities:
-
-* Intent and outcome identification
-* Context and state management
-* Adaptive question selection
-* Constraint and preference discovery
-* Context-aware reasoning
-* User review and correction
-* Plan generation
-* Domain-specific extensions
-* AI quality and governance controls
-
-The underlying AI should determine what needs to be clarified rather than relying on hardcoded question sequences.
-
-## Project Status
-
-This project is being developed incrementally as a working prototype.
-
-The initial implementation will establish the adaptive planning experience and reasoning model before expanding into additional domains and production-oriented capabilities.
-
-## Roadmap
-
-* [ ] Define adaptive planning behavior
-* [ ] Create the planning prompt and reasoning contract
-* [ ] Define the application architecture
-* [ ] Build the initial user interface
-* [ ] Connect the application to an AI model
-* [ ] Implement conversational state management
-* [ ] Add user review and correction
-* [ ] Generate structured final plans
-* [ ] Test across multiple unrelated domains
-* [ ] Add domain-specific extensions
-* [ ] Add quality, governance, and evaluation capabilities
-
-## Key Principle
-
-**The quality of the final plan depends on understanding the user's intent and asking the right question at the right time — not on asking every possible question.**
+The goal is not to build a complex AI system from scratch, but to demonstrate how a TPM can identify a real-world problem, define an MVP, design an AI-assisted workflow, and translate the resulting experience into a useful product.
