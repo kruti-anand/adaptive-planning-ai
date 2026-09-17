@@ -1,80 +1,77 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Adaptive Planning</title>
+  <title>AI Travel Plan Assistant</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <main class="app">
+
     <header class="app-header">
-      <h1>AI Adaptive Planning</h1>
-      <p>Turn a rough idea into a clear, personalized, actionable plan.</p>
+      <h1>AI Travel Plan Assistant</h1>
+      <p>Turn your travel ideas into a personalized, practical trip plan.</p>
     </header>
 
+    <section id="start-view" class="view">
+      <label for="request-input">Where would you like to travel?</label>
 
-<section id="start-view" class="view">
-  <label for="request-input">What would you like to plan?</label>
+      <textarea
+        id="request-input"
+        rows="6"
+        placeholder="Tell me about the trip you have in mind..."
+      ></textarea>
 
-  <textarea
-    id="request-input"
-    rows="6"
-    placeholder="Describe what you want to accomplish..."
-  ></textarea>
+      <button id="start-planning">Start Planning</button>
 
-  <button id="start-planning">Start Planning</button>
+      <p class="hint">Press Ctrl + Enter to start.</p>
+    </section>
 
-  <p class="hint">Press Ctrl + Enter to start.</p>
-</section>
+    <section id="conversation-view" class="view hidden">
+      <div id="conversation" class="conversation"></div>
 
-<section id="conversation-view" class="view hidden">
-  <div id="conversation" class="conversation"></div>
+      <div class="response-area">
+        <label for="response-input">Your response</label>
 
-  <div class="response-area">
-    <label for="response-input">Your response</label>
+        <textarea
+          id="response-input"
+          rows="4"
+          placeholder="Add your response..."
+        ></textarea>
 
-    <textarea
-      id="response-input"
-      rows="4"
-      placeholder="Add your response..."
-    ></textarea>
+        <button id="submit-response">Continue</button>
 
-    <button id="submit-response">Continue</button>
+        <p class="hint">Press Ctrl + Enter to continue.</p>
+      </div>
+    </section>
 
-    <p class="hint">Press Ctrl + Enter to continue.</p>
-  </div>
-</section>
+    <section id="completion-view" class="view hidden">
+      <div class="completion-card">
+        <h2>Trip Details Collected</h2>
 
-<section id="completion-view" class="view hidden">
-  <div class="completion-card">
-    <h2>Discovery Complete</h2>
+        <p>
+          I have the key information needed to create your initial travel plan.
+        </p>
 
-    <p>
-      No further questions have been identified that would materially
-      change the plan.
-    </p>
+        <p>
+          Would you like to proceed with the plan, or add any additional details first?
+        </p>
 
-    <p>
-      Would you like to proceed with the final plan, or would you like
-      to add any additional details first?
-    </p>
+        <div class="completion-actions">
+          <button id="add-details">Add Details</button>
+          <button id="generate-plan">Generate Travel Plan</button>
+        </div>
+      </div>
+    </section>
 
-    <div class="completion-actions">
-      <button id="add-details">Add Details</button>
-      <button id="generate-plan">Proceed to Final Plan</button>
-    </div>
-  </div>
-</section>
-
-<section id="plan-view" class="view hidden">
-  <div id="final-plan" class="plan-card"></div>
-</section>
+    <section id="plan-view" class="view hidden">
+      <div id="final-plan" class="plan-card"></div>
+    </section>
 
   </main>
 
   <script src="app.js"></script>
-
 </body>
 </html>
