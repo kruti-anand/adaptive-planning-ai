@@ -22,6 +22,24 @@ __dirname,
 
 const planningPrompt = fs.readFileSync(planningPromptPath, "utf8");
 
+const responseSchema = {
+type: "object",
+additionalProperties: false,
+properties: {
+type: {
+type: "string",
+enum: ["question", "complete", "plan"]
+},
+message: {
+type: "string"
+},
+why_it_matters: {
+type: "string"
+}
+},
+required: ["type", "message", "why_it_matters"]
+};
+
 app.use(express.json());
 app.use(express.static(__dirname));
 
@@ -37,16 +55,26 @@ if (!Array.isArray(messages) || messages.length === 0) {
 }
 
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-5.6-luna",
   instructions: planningPrompt,
   input: messages.map((message) => ({
     role: message.role === "ai" ? "assistant" : "user",
     content: message.text
-  }))
+  })),
+  text: {
+    format: {
+      type: "json_schema",
+      name: "adaptive_planning_response",
+      strict: true,
+      schema: responseSchema
+    }
+  }
 });
 
+const result = JSON.parse(response.output_text);
+
 res.json({
-  response: response.output_text
+  response: result
 });
 ```
 
