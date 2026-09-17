@@ -1,7 +1,9 @@
+import { generatePlanningResponse } from "./planner.js";
+
 const state = {
-initialRequest: "",
-messages: [],
-status: "start"
+  initialRequest: "",
+  messages: [],
+  status: "start"
 };
 
 const startView = document.getElementById("start-view");
@@ -20,209 +22,181 @@ const addDetailsButton = document.getElementById("add-details");
 const generatePlanButton = document.getElementById("generate-plan");
 
 function showView(view) {
-startView.classList.add("hidden");
-conversationView.classList.add("hidden");
-completionView.classList.add("hidden");
-planView.classList.add("hidden");
+  startView.classList.add("hidden");
+  conversationView.classList.add("hidden");
+  completionView.classList.add("hidden");
+  planView.classList.add("hidden");
 
-view.classList.remove("hidden");
+  view.classList.remove("hidden");
 }
 
 function addMessage(role, text) {
-state.messages.push({
-role,
-text
-});
+  state.messages.push({
+    role,
+    text
+  });
 
-renderConversation();
+  renderConversation();
 }
 
 function renderConversation() {
-conversation.innerHTML = "";
+  conversation.innerHTML = "";
 
-state.messages.forEach((message) => {
-const messageElement = document.createElement("div");
-messageElement.className = `message ${message.role}`;
+  state.messages.forEach((message) => {
+    const messageElement = document.createElement("div");
+    messageElement.className = `message ${message.role}`;
 
-const label = document.createElement("span");
-label.className = "message-label";
-label.textContent = message.role === "user" ? "You" : "AI";
+    const label = document.createElement("span");
+    label.className = "message-label";
+    label.textContent = message.role === "user" ? "You" : "AI";
 
-const content = document.createElement("div");
-content.textContent = message.text;
+    const content = document.createElement("div");
+    content.textContent = message.text;
 
-messageElement.appendChild(label);
-messageElement.appendChild(content);
+    messageElement.appendChild(label);
+    messageElement.appendChild(content);
 
-conversation.appendChild(messageElement);
+    conversation.appendChild(messageElement);
+  });
 
-});
-
-conversation.scrollTop = conversation.scrollHeight;
+  conversation.scrollTop = conversation.scrollHeight;
 }
 
-async function callPlanningEngine() {
-try {
-setLoading(true);
+function callPlanningEngine() {
+  try {
+    setLoading(true);
 
-const response = await fetch("/api/plan", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    messages: state.messages
-  })
-});
+    const result = generatePlanningResponse(state.messages);
 
-const data = await response.json();
+    if (!result || !result.type || !result.message) {
+      throw new Error("The planning engine returned an invalid response.");
+    }
 
-if (!response.ok) {
-  throw new Error(
-    data.error || "The planning engine could not process the request."
-  );
-}
+    return result;
+  } catch (error) {
+    console.error(error);
 
-if (!data.response || !data.response.type) {
-  throw new Error("The planning engine returned an invalid response.");
-}
+    addMessage(
+      "ai",
+      "I’m unable to create the travel plan right now. Please try again."
+    );
 
-return data.response;
-
-
-} catch (error) {
-console.error(error);
-
-addMessage(
-  "ai",
-  "I’m unable to connect to the planning engine right now. Please check the application configuration and try again."
-);
-
-return null;
-
-
-} finally {
-setLoading(false);
-}
+    return null;
+  } finally {
+    setLoading(false);
+  }
 }
 
 function handlePlanningResponse(result) {
-if (!result) {
-return;
+  if (!result) {
+    return;
+  }
+
+  if (result.type === "question") {
+    state.status = "conversation";
+
+    let message = result.message;
+
+    if (result.why_it_matters) {
+      message += `\n\nWhy this matters: ${result.why_it_matters}`;
+    }
+
+    addMessage("ai", message);
+    responseInput.focus();
+    return;
+  }
+
+  if (result.type === "complete") {
+    state.status = "complete";
+
+    if (result.message) {
+      addMessage("ai", result.message);
+    }
+
+    showView(completionView);
+    return;
+  }
+
+  if (result.type === "plan") {
+    state.status = "plan";
+
+    showView(planView);
+
+    finalPlan.innerHTML = "";
+
+    const heading = document.createElement("h2");
+    heading.textContent = "Final Travel Plan";
+
+    const content = document.createElement("div");
+    content.textContent = result.message;
+
+    finalPlan.appendChild(heading);
+    finalPlan.appendChild(content);
+  }
 }
 
-if (result.type === "question") {
-state.status = "conversation";
+function startPlanning() {
+  const request = requestInput.value.trim();
 
-let message = result.message;
+  if (!request) {
+    requestInput.focus();
+    return;
+  }
 
-if (result.why_it_matters) {
-  message += `\n\nWhy this matters: ${result.why_it_matters}`;
+  state.initialRequest = request;
+  state.messages = [];
+  state.status = "conversation";
+
+  showView(conversationView);
+
+  addMessage("user", request);
+
+  const result = callPlanningEngine();
+
+  handlePlanningResponse(result);
 }
 
-addMessage("ai", message);
-responseInput.focus();
-return;
+function submitResponse() {
+  const response = responseInput.value.trim();
 
+  if (!response) {
+    responseInput.focus();
+    return;
+  }
 
-}
+  addMessage("user", response);
 
-if (result.type === "complete") {
-state.status = "complete";
+  responseInput.value = "";
 
+  const result = callPlanningEngine();
 
-if (result.message) {
-  addMessage("ai", result.message);
-}
-
-showView(completionView);
-return;
-
-
-}
-
-if (result.type === "plan") {
-state.status = "plan";
-
-showView(planView);
-
-finalPlan.innerHTML = "";
-
-const heading = document.createElement("h2");
-heading.textContent = "Final Plan";
-
-const content = document.createElement("div");
-content.textContent = result.message;
-
-finalPlan.appendChild(heading);
-finalPlan.appendChild(content);
-
-
-}
-}
-
-async function startPlanning() {
-const request = requestInput.value.trim();
-
-if (!request) {
-requestInput.focus();
-return;
-}
-
-state.initialRequest = request;
-state.messages = [];
-state.status = "conversation";
-
-showView(conversationView);
-
-addMessage("user", request);
-
-const result = await callPlanningEngine();
-
-handlePlanningResponse(result);
-}
-
-async function submitResponse() {
-const response = responseInput.value.trim();
-
-if (!response) {
-responseInput.focus();
-return;
-}
-
-addMessage("user", response);
-
-responseInput.value = "";
-
-const result = await callPlanningEngine();
-
-handlePlanningResponse(result);
+  handlePlanningResponse(result);
 }
 
 function addDetails() {
-state.status = "conversation";
+  state.status = "conversation";
 
-showView(conversationView);
+  showView(conversationView);
 
-responseInput.focus();
+  responseInput.focus();
 }
 
-async function generatePlan() {
-addMessage("user", "Proceed with the final plan.");
+function generatePlan() {
+  addMessage("user", "Proceed with the final plan.");
 
-const result = await callPlanningEngine();
+  const result = callPlanningEngine();
 
-handlePlanningResponse(result);
+  handlePlanningResponse(result);
 }
 
 function setLoading(isLoading) {
-startPlanningButton.disabled = isLoading;
-submitResponseButton.disabled = isLoading;
-addDetailsButton.disabled = isLoading;
-generatePlanButton.disabled = isLoading;
+  startPlanningButton.disabled = isLoading;
+  submitResponseButton.disabled = isLoading;
+  addDetailsButton.disabled = isLoading;
+  generatePlanButton.disabled = isLoading;
 
-responseInput.disabled = isLoading;
-requestInput.disabled = isLoading;
+  responseInput.disabled = isLoading;
+  requestInput.disabled = isLoading;
 }
 
 startPlanningButton.addEventListener("click", startPlanning);
@@ -231,13 +205,13 @@ addDetailsButton.addEventListener("click", addDetails);
 generatePlanButton.addEventListener("click", generatePlan);
 
 requestInput.addEventListener("keydown", (event) => {
-if (event.key === "Enter" && event.ctrlKey) {
-startPlanning();
-}
+  if (event.key === "Enter" && event.ctrlKey) {
+    startPlanning();
+  }
 });
 
 responseInput.addEventListener("keydown", (event) => {
-if (event.key === "Enter" && event.ctrlKey) {
-submitResponse();
-}
+  if (event.key === "Enter" && event.ctrlKey) {
+    submitResponse();
+  }
 });
