@@ -16,11 +16,10 @@ export function generatePlanningResponse(messages) {
     return {
       type: "question",
       message: "Where would you like to travel?",
-      why_it_matters: "The destination gives us the starting point for your trip plan."
+      why_it_matters:
+        "The destination gives us the starting point for your trip plan."
     };
   }
-
-  const request = userMessages[0];
 
   if (userMessages.length === 1) {
     return question(
@@ -68,7 +67,6 @@ export function generatePlanningResponse(messages) {
   };
 }
 
-
 function question(message, why) {
   return {
     type: "question",
@@ -76,7 +74,6 @@ function question(message, why) {
     why_it_matters: why
   };
 }
-
 
 function normalizeMessages(messages) {
   return messages
@@ -92,7 +89,6 @@ function normalizeMessages(messages) {
     }))
     .filter((message) => message.text.length > 0);
 }
-
 
 function buildTravelPlan(userMessages) {
   const destination = userMessages[0];
