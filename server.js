@@ -47,7 +47,6 @@ app.post("/api/plan", async (req, res) => {
 try {
 const { messages } = req.body;
 
-```
 if (!Array.isArray(messages) || messages.length === 0) {
   return res.status(400).json({
     error: "A planning conversation is required."
@@ -76,16 +75,13 @@ const result = JSON.parse(response.output_text);
 res.json({
   response: result
 });
-```
 
 } catch (error) {
 console.error("Planning request failed:", error);
 
-```
 res.status(500).json({
   error: "Unable to process the planning request."
 });
-```
 
 }
 });
