@@ -59,6 +59,8 @@ conversation.appendChild(messageElement);
 ```
 
 });
+
+conversation.scrollTop = conversation.scrollHeight;
 }
 
 async function callPlanningEngine() {
@@ -79,7 +81,13 @@ const response = await fetch("/api/plan", {
 const data = await response.json();
 
 if (!response.ok) {
-  throw new Error(data.error || "The planning engine could not process the request.");
+  throw new Error(
+    data.error || "The planning engine could not process the request."
+  );
+}
+
+if (!data.response || !data.response.type) {
+  throw new Error("The planning engine returned an invalid response.");
 }
 
 return data.response;
@@ -102,6 +110,63 @@ setLoading(false);
 }
 }
 
+function handlePlanningResponse(result) {
+if (!result) {
+return;
+}
+
+if (result.type === "question") {
+state.status = "conversation";
+
+```
+let message = result.message;
+
+if (result.why_it_matters) {
+  message += `\n\nWhy this matters: ${result.why_it_matters}`;
+}
+
+addMessage("ai", message);
+responseInput.focus();
+return;
+```
+
+}
+
+if (result.type === "complete") {
+state.status = "complete";
+
+```
+if (result.message) {
+  addMessage("ai", result.message);
+}
+
+showView(completionView);
+return;
+```
+
+}
+
+if (result.type === "plan") {
+state.status = "plan";
+
+```
+showView(planView);
+
+finalPlan.innerHTML = "";
+
+const heading = document.createElement("h2");
+heading.textContent = "Final Plan";
+
+const content = document.createElement("div");
+content.textContent = result.message;
+
+finalPlan.appendChild(heading);
+finalPlan.appendChild(content);
+```
+
+}
+}
+
 async function startPlanning() {
 const request = requestInput.value.trim();
 
@@ -118,11 +183,9 @@ showView(conversationView);
 
 addMessage("user", request);
 
-const aiResponse = await callPlanningEngine();
+const result = await callPlanningEngine();
 
-if (aiResponse) {
-addMessage("ai", aiResponse);
-}
+handlePlanningResponse(result);
 }
 
 async function submitResponse() {
@@ -137,49 +200,25 @@ addMessage("user", response);
 
 responseInput.value = "";
 
-const aiResponse = await callPlanningEngine();
+const result = await callPlanningEngine();
 
-if (aiResponse) {
-addMessage("ai", aiResponse);
-}
-}
-
-function showCompletion() {
-state.status = "complete";
-showView(completionView);
+handlePlanningResponse(result);
 }
 
 function addDetails() {
 state.status = "conversation";
+
 showView(conversationView);
+
 responseInput.focus();
 }
 
 async function generatePlan() {
-addMessage(
-"user",
-"The user has chosen to proceed with the final plan."
-);
+addMessage("user", "Proceed with the final plan.");
 
-const aiResponse = await callPlanningEngine();
+const result = await callPlanningEngine();
 
-if (!aiResponse) {
-return;
-}
-
-state.status = "plan";
-showView(planView);
-
-finalPlan.innerHTML = "";
-
-const heading = document.createElement("h2");
-heading.textContent = "Final Plan";
-
-const content = document.createElement("div");
-content.textContent = aiResponse;
-
-finalPlan.appendChild(heading);
-finalPlan.appendChild(content);
+handlePlanningResponse(result);
 }
 
 function setLoading(isLoading) {
@@ -194,11 +233,7 @@ requestInput.disabled = isLoading;
 
 startPlanningButton.addEventListener("click", startPlanning);
 submitResponseButton.addEventListener("click", submitResponse);
-addDetailsButton.addEventListener("click", () => {
-state.status = "conversation";
-showView(conversationView);
-responseInput.focus();
-});
+addDetailsButton.addEventListener("click", addDetails);
 generatePlanButton.addEventListener("click", generatePlan);
 
 requestInput.addEventListener("keydown", (event) => {
